@@ -9,12 +9,23 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="number"
         android:ems="10"
+        android:id="@+id/txtCardName"
+        android:maxLength="25"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:hint="@string/strCardName" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/txtCardNum"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/strCardNum" />
+        android:inputType="number"
+        android:maxLength="16"
+        android:hint="@string/strCardNum"
+        android:layout_below="@+id/txtCardName"
+        android:layout_marginBottom="20dp"
+        android:layout_alignLeft="@+id/txtCardName" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -22,31 +33,30 @@
         android:inputType="number"
         android:ems="10"
         android:id="@+id/txtBillDate"
+        android:maxLength="2"
+        android:hint="@string/strBillDate"
+        android:layout_marginBottom="20dp"
         android:layout_below="@+id/txtCardNum"
-        android:layout_alignLeft="@+id/txtCardNum"
-        android:layout_alignStart="@+id/txtCardNum"
-        android:layout_marginTop="33dp"
-        android:text="@string/strBillDate" />
+        android:layout_alignLeft="@+id/txtCardNum" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/strSaveCard"
         android:id="@+id/btnSaveCard"
+        android:layout_marginBottom="20dp"
         android:layout_below="@+id/txtBillDate"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="31dp" />
+        android:layout_centerHorizontal="true" />
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/lstSavedCards"
         android:layout_below="@+id/btnSaveCard"
-        android:layout_marginTop="71dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
         android:choiceMode="singleChoice"
         android:background="#929292"
         android:focusableInTouchMode="true" />
+
 
 </RelativeLayout>

@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> a, View v, int position,
                                     long id) {
 
-                Toast.makeText(MainActivity.this, (String)a.getItemAtPosition(position), Toast.LENGTH_LONG)
+                Toast.makeText(MainActivity.this, (String) a.getItemAtPosition(position), Toast.LENGTH_LONG)
                         .show();
             }
         });
