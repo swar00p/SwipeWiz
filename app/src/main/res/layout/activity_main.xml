@@ -9,9 +9,9 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
         android:id="@+id/txtCardName"
         android:maxLength="25"
+        android:ems="12"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="20dp"
         android:hint="@string/strCardName" />
@@ -22,6 +22,7 @@
         android:id="@+id/txtCardNum"
         android:inputType="number"
         android:maxLength="16"
+        android:ems="12"
         android:hint="@string/strCardNum"
         android:layout_below="@+id/txtCardName"
         android:layout_marginBottom="20dp"
@@ -31,8 +32,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:ems="10"
         android:id="@+id/txtBillDate"
+        android:ems="2"
         android:maxLength="2"
         android:hint="@string/strBillDate"
         android:layout_marginBottom="20dp"
@@ -48,6 +49,32 @@
         android:layout_below="@+id/txtBillDate"
         android:layout_centerHorizontal="true" />
 
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnSaveCard"
+        android:scrollbars="none">
+
+        <TableLayout
+            android:id="@+id/tblSavedCards"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:isScrollContainer="true">
+
+            <TableRow
+                android:id="@+id/headerRow"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <TextView android:background="@drawable/cell_shape" android:textColor="@color/black" android:textStyle="bold" android:id="@+id/headerCell1"
+                    android:text="Card Name" android:layout_weight="1" />
+                <TextView android:background="@drawable/cell_shape" android:textColor="@color/black" android:textStyle="bold" android:id="@+id/headerCell2"
+                    android:text="Billing Date" android:layout_weight="1" />
+                <!-- Fill content here -->
+
+            </TableRow>
+        </TableLayout>
+    </ScrollView>
+<!--
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,6 +84,6 @@
         android:choiceMode="singleChoice"
         android:background="#929292"
         android:focusableInTouchMode="true" />
-
+-->
 
 </RelativeLayout>
