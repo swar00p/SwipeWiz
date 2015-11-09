@@ -18,8 +18,8 @@ public class CardDBHelper extends SQLiteOpenHelper {
     public static final String SAVEDCARDS_COLUMN_ID = "_id";
     public static final String SAVEDCARDS_COLUMN_BILLINGDATE = "billdate";
 
-    public CardDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public CardDBHelper(Context context) {
+        super(context, DATABASE_NAME , null, DATABASE_VERSION);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.swarooprao.androidapps.swipewiz;
 
 import android.annotation.TargetApi;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -19,10 +20,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    CardDBHelper dbHelper;
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        dbHelper = new CardDBHelper(getApplicationContext());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -45,6 +48,40 @@ public class MainActivity extends AppCompatActivity {
                 String cardNumber = txtCardNumber.getText().toString();
                 String billDate = txtBillDate.getText().toString();
                 String cardName = txtCardName.getText().toString();
+
+                dbHelper.addCard(cardName, cardNumber, Integer.parseInt(billDate));
+                populateSavedCardsList();
+                //row.setLayoutParams(lp);
+                //savedCardList.add(listItem);
+                //savedCardListAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        populateSavedCardsList();
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private void populateSavedCardsList () {
+        String cardName, cardNumber;
+        int billingDate;
+        final EditText txtCardNumber = (EditText)findViewById(R.id.txtCardNum);
+        final EditText txtBillDate = (EditText)findViewById(R.id.txtBillDate);
+        final EditText txtCardName = (EditText)findViewById(R.id.txtCardName);
+        final TableLayout tblSavedCards = (TableLayout)findViewById(R.id.tblSavedCards);
+        final Drawable cellShape = getApplicationContext().getResources().getDrawable(R.drawable.cell_shape, null);
+        final int textColor = getApplicationContext().getResources().getColor(R.color.black, null);
+        Cursor cursor = dbHelper.getCards();
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                cardName = cursor.getString(1);
+                cardNumber = cursor.getString(2);
+                billingDate = cursor.getInt(3);
                 String listItem = cardName + " - " + cardNumber.substring(cardNumber.length()-4);
 
                 TableRow row= new TableRow(getApplicationContext());
@@ -59,29 +96,16 @@ public class MainActivity extends AppCompatActivity {
                 TextView col2 = new TextView(getApplicationContext());
                 col2.setBackground(cellShape);
                 col2.setTextColor(textColor);
-                col2.setText(billDate);
+                col2.setText(String.valueOf(billingDate));
                 col2.setLayoutParams(lp);
 
                 row.addView(col1, 0);
                 row.addView(col2, 1);
 
                 tblSavedCards.addView(row);
-                //row.setLayoutParams(lp);
-                //savedCardList.add(listItem);
-                //savedCardListAdapter.notifyDataSetChanged();
+                cursor.moveToNext();
             }
-        });
-
-        /*
-        lstSavedCardList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> a, View v, int position,
-                                    long id) {
-
-                Toast.makeText(MainActivity.this, (String) a.getItemAtPosition(position), Toast.LENGTH_LONG)
-                        .show();
-            }
-        });
-         */
+            cursor.close();
+        }
     }
 }
