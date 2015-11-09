@@ -50,7 +50,30 @@ public class MainActivity extends AppCompatActivity {
                 String cardName = txtCardName.getText().toString();
 
                 dbHelper.addCard(cardName, cardNumber, Integer.parseInt(billDate));
-                populateSavedCardsList();
+
+                String listItem = cardName + " - " + cardNumber.substring(cardNumber.length()-4);
+
+                TableRow row= new TableRow(getApplicationContext());
+                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+
+                TextView col1 = new TextView(getApplicationContext());
+                col1.setBackground(cellShape);
+                col1.setTextColor(textColor);
+                col1.setText(listItem);
+                col1.setLayoutParams(lp);
+
+                TextView col2 = new TextView(getApplicationContext());
+                col2.setBackground(cellShape);
+                col2.setTextColor(textColor);
+                col2.setText(String.valueOf(billDate));
+                col2.setLayoutParams(lp);
+
+                row.addView(col1, 0);
+                row.addView(col2, 1);
+
+                tblSavedCards.addView(row);
+
+                //populateSavedCardsList();
                 //row.setLayoutParams(lp);
                 //savedCardList.add(listItem);
                 //savedCardListAdapter.notifyDataSetChanged();
@@ -85,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 String listItem = cardName + " - " + cardNumber.substring(cardNumber.length()-4);
 
                 TableRow row= new TableRow(getApplicationContext());
-                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT, 1f);
 
                 TextView col1 = new TextView(getApplicationContext());
                 col1.setBackground(cellShape);
