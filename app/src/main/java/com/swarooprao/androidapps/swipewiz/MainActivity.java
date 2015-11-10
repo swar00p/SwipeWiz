@@ -7,6 +7,7 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     CardDBHelper dbHelper;
+    boolean reloadSavedCards = false;
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
@@ -34,9 +36,17 @@ public class MainActivity extends AppCompatActivity {
         final EditText txtCardNumber = (EditText)findViewById(R.id.txtCardNum);
         final EditText txtBillDate = (EditText)findViewById(R.id.txtBillDate);
         final EditText txtCardName = (EditText)findViewById(R.id.txtCardName);
-        final TableLayout tblSavedCards = (TableLayout)findViewById(R.id.tblSavedCards);
+        //final TableLayout tblSavedCards = (TableLayout)findViewById(R.id.tblSavedCards);
         final Drawable cellShape = getApplicationContext().getResources().getDrawable(R.drawable.cell_shape, null);
         final int textColor = getApplicationContext().getResources().getColor(R.color.black, null);
+
+        // Find ListView to populate
+        ListView lvSavedCards = (ListView) findViewById(R.id.lstSavedCards);
+        Cursor cursor = dbHelper.getCards();
+        // Setup cursor adapter using cursor from last step
+        SavedCardsCursorAdapter savedCardsAdapter = new SavedCardsCursorAdapter(this, cursor, 0);
+        // Attach cursor adapter to the ListView
+        lvSavedCards.setAdapter(savedCardsAdapter);
 
         //final ArrayList<String> savedCardList = new ArrayList<String>();
         //final ArrayAdapter<String> savedCardListAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, savedCardList);
@@ -46,13 +56,30 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String cardNumber = txtCardNumber.getText().toString();
+                txtCardNumber.setText("");
                 String billDate = txtBillDate.getText().toString();
+                txtBillDate.setText("");
                 String cardName = txtCardName.getText().toString();
+                txtCardName.setText("");
+
+                getWindow().setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+                );
 
                 dbHelper.addCard(cardName, cardNumber, Integer.parseInt(billDate));
 
-                String listItem = cardName + " - " + cardNumber.substring(cardNumber.length()-4);
+                //String listItem = cardName + " - " + cardNumber.substring(cardNumber.length()-4);
 
+                // Find ListView to populate
+                ListView lvSavedCards = (ListView) findViewById(R.id.lstSavedCards);
+                Cursor cursor = dbHelper.getCards();
+                // Setup cursor adapter using cursor from last step
+                SavedCardsCursorAdapter savedCardsAdapter = new SavedCardsCursorAdapter(getApplicationContext(), cursor, 0);
+                // Attach cursor adapter to the ListView
+                lvSavedCards.setAdapter(savedCardsAdapter);
+                // Switch to new cursor and update contents of ListView
+                savedCardsAdapter.changeCursor(cursor);
+                /*
                 TableRow row= new TableRow(getApplicationContext());
                 TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f);
 
@@ -72,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 row.addView(col2, 1);
 
                 tblSavedCards.addView(row);
+                */
 
                 //populateSavedCardsList();
                 //row.setLayoutParams(lp);
@@ -84,9 +112,32 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        populateSavedCardsList();
+
+        //final TableLayout tblSavedCards = (TableLayout)findViewById(R.id.tblSavedCards);
+        //if (tblSavedCards.getChildCount() <= 1) {
+        if (reloadSavedCards) {
+            //populateSavedCardsList();
+            // Find ListView to populate
+            ListView lvSavedCards = (ListView) findViewById(R.id.lstSavedCards);
+            Cursor cursor = dbHelper.getCards();
+            // Setup cursor adapter using cursor from last step
+            SavedCardsCursorAdapter savedCardsAdapter = new SavedCardsCursorAdapter(getApplicationContext(), cursor, 0);
+            // Attach cursor adapter to the ListView
+            lvSavedCards.setAdapter(savedCardsAdapter);
+            // Switch to new cursor and update contents of ListView
+            savedCardsAdapter.changeCursor(cursor);
+
+            //reloadSavedCards = false;
+        }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        reloadSavedCards = true;
+    }
+
+    /*
     @TargetApi(Build.VERSION_CODES.M)
     private void populateSavedCardsList () {
         String cardName, cardNumber;
@@ -131,4 +182,5 @@ public class MainActivity extends AppCompatActivity {
             cursor.close();
         }
     }
+    */
 }
