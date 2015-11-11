@@ -1,6 +1,7 @@
 package com.swarooprao.androidapps.swipewiz;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -37,11 +39,26 @@ public class MainActivity extends AppCompatActivity {
         final EditText txtBillDate = (EditText)findViewById(R.id.txtBillDate);
         final EditText txtCardName = (EditText)findViewById(R.id.txtCardName);
         //final TableLayout tblSavedCards = (TableLayout)findViewById(R.id.tblSavedCards);
-        final Drawable cellShape = getApplicationContext().getResources().getDrawable(R.drawable.cell_shape, null);
+        //final Drawable cellShape = getApplicationContext().getResources().getDrawable(R.drawable.cell_shape, null);
         final int textColor = getApplicationContext().getResources().getColor(R.color.black, null);
 
         // Find ListView to populate
         ListView lvSavedCards = (ListView) findViewById(R.id.lstSavedCards);
+        lvSavedCards.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                dbHelper.deleteCard(id);
+                ListView lvSavedCards = (ListView) findViewById(R.id.lstSavedCards);
+                Cursor cursor = dbHelper.getCards();
+                // Setup cursor adapter using cursor from last step
+                SavedCardsCursorAdapter savedCardsAdapter = new SavedCardsCursorAdapter(getApplicationContext(), cursor, 0);
+                // Attach cursor adapter to the ListView
+                lvSavedCards.setAdapter(savedCardsAdapter);
+                // Switch to new cursor and update contents of ListView
+                savedCardsAdapter.changeCursor(cursor);
+                return true;
+            }
+        });
         Cursor cursor = dbHelper.getCards();
         // Setup cursor adapter using cursor from last step
         SavedCardsCursorAdapter savedCardsAdapter = new SavedCardsCursorAdapter(this, cursor, 0);
@@ -65,8 +82,13 @@ public class MainActivity extends AppCompatActivity {
                 getWindow().setSoftInputMode(
                         WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
                 );
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
 
-                dbHelper.addCard(cardName, cardNumber, Integer.parseInt(billDate));
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+
+                long cardId = dbHelper.addCard(cardName, cardNumber, Integer.parseInt(billDate));
 
                 //String listItem = cardName + " - " + cardNumber.substring(cardNumber.length()-4);
 

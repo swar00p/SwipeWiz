@@ -25,7 +25,7 @@ public class CardDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + SAVEDCARDS_TABLE_NAME + "(" +
-                        SAVEDCARDS_COLUMN_ID + " INTEGER PRIMARY KEY, " +
+                        SAVEDCARDS_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                         SAVEDCARDS_COLUMN_CARDNAME + " TEXT, " +
                         SAVEDCARDS_COLUMN_CARDNUMBER + " TEXT, " +
                         SAVEDCARDS_COLUMN_BILLINGDATE + " INTEGER)"
@@ -37,15 +37,15 @@ public class CardDBHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean addCard (String cardName, String cardNumber, int billingDate) {
-        boolean retVal = true;
+    public long addCard (String cardName, String cardNumber, int billingDate) {
+        long retVal = 0;
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues rowData = new ContentValues();
         rowData.put (SAVEDCARDS_COLUMN_CARDNAME, cardName);
         rowData.put (SAVEDCARDS_COLUMN_CARDNUMBER, cardNumber);
         rowData.put (SAVEDCARDS_COLUMN_BILLINGDATE, billingDate);
-        db.insert(SAVEDCARDS_TABLE_NAME, null, rowData);
+        retVal = db.insert(SAVEDCARDS_TABLE_NAME, null, rowData);
 
         return retVal;
     }
@@ -54,5 +54,10 @@ public class CardDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + SAVEDCARDS_TABLE_NAME, null);
         return cursor;
+    }
+
+    public void deleteCard (long rowId) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(SAVEDCARDS_TABLE_NAME, "_id = " + rowId, null);
     }
 }
