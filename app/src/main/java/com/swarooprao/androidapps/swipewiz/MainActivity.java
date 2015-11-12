@@ -1,7 +1,10 @@
 package com.swarooprao.androidapps.swipewiz;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -46,16 +49,43 @@ public class MainActivity extends AppCompatActivity {
         ListView lvSavedCards = (ListView) findViewById(R.id.lstSavedCards);
         lvSavedCards.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                dbHelper.deleteCard(id);
-                ListView lvSavedCards = (ListView) findViewById(R.id.lstSavedCards);
-                Cursor cursor = dbHelper.getCards();
-                // Setup cursor adapter using cursor from last step
-                SavedCardsCursorAdapter savedCardsAdapter = new SavedCardsCursorAdapter(getApplicationContext(), cursor, 0);
-                // Attach cursor adapter to the ListView
-                lvSavedCards.setAdapter(savedCardsAdapter);
-                // Switch to new cursor and update contents of ListView
-                savedCardsAdapter.changeCursor(cursor);
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, final long id) {
+
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            // Yes button clicked
+                            //Toast.makeText(MainActivity.this, "Yes Clicked",
+                                    //Toast.LENGTH_LONG).show();
+
+                            dbHelper.deleteCard(id);
+                            ListView lvSavedCards = (ListView) findViewById(R.id.lstSavedCards);
+                            Cursor cursor = dbHelper.getCards();
+                            // Setup cursor adapter using cursor from last step
+                            SavedCardsCursorAdapter savedCardsAdapter = new SavedCardsCursorAdapter(getApplicationContext(), cursor, 0);
+                            // Attach cursor adapter to the ListView
+                            lvSavedCards.setAdapter(savedCardsAdapter);
+                            // Switch to new cursor and update contents of ListView
+                            savedCardsAdapter.changeCursor(cursor);
+                            updateNotification ();
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            // No button clicked
+                            // do nothing
+                            //Toast.makeText(MainActivity.this, "No Clicked",
+                                    //Toast.LENGTH_LONG).show();
+                            break;
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+            builder.setMessage("Delete this card?")
+                    .setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show();
+
                 return true;
             }
         });
@@ -101,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
                 lvSavedCards.setAdapter(savedCardsAdapter);
                 // Switch to new cursor and update contents of ListView
                 savedCardsAdapter.changeCursor(cursor);
+
+                updateNotification();
                 /*
                 TableRow row= new TableRow(getApplicationContext());
                 TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f);
@@ -129,6 +161,12 @@ public class MainActivity extends AppCompatActivity {
                 //savedCardListAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private void updateNotification() {
+        Context context = MainActivity.this.getApplicationContext();
+        Intent service = new Intent(context, ShowNotificationIntentService.class);
+        context.startService(service);
     }
 
     @Override
