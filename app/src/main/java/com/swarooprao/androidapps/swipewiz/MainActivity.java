@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         final EditText txtCardName = (EditText)findViewById(R.id.txtCardName);
         //final TableLayout tblSavedCards = (TableLayout)findViewById(R.id.tblSavedCards);
         //final Drawable cellShape = getApplicationContext().getResources().getDrawable(R.drawable.cell_shape, null);
-        final int textColor = getApplicationContext().getResources().getColor(R.color.black, null);
+        //final int textColor = getApplicationContext().getResources().getColor(R.color.black, null);
 
         // Find ListView to populate
         ListView lvSavedCards = (ListView) findViewById(R.id.lstSavedCards);
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setMessage("Delete this card?")
                     .setPositiveButton("Yes", dialogClickListener)
                     .setNegativeButton("No", dialogClickListener).show();

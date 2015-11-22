@@ -144,7 +144,7 @@ public class ShowNotificationIntentService extends IntentService {
 
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(this)
-                            .setSmallIcon(R.drawable.ic_best_card)
+                            .setSmallIcon(R.drawable.ic_stat_18_512)
                             .setContentTitle("Best card to use today: ")
                             .setContentText(bestCardName);
             mBuilder.setContentIntent(pIntent);
