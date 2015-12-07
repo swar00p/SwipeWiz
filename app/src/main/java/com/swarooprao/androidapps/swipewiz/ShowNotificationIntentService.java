@@ -90,47 +90,36 @@ public class ShowNotificationIntentService extends IntentService {
                 cardName = cursor.getString(1);
                 cardNumber = cursor.getString(2);
                 billDay = cursor.getInt(3);
+                billDate = Calendar.getInstance();
                 if (curDay > billDay) {
                     billMonth = curMonth + 1;
-                    if (billMonth > 12) {
-                        billMonth = 1;
+                    if (billMonth > 11) {
+                        billMonth = 0;
                         billYear = curYear + 1;
                     }
-                    billDate = Calendar.getInstance();
+
                     billDate.set(Calendar.YEAR, billYear);
                     billDate.set(Calendar.MONTH, billMonth);
                     billDate.set(Calendar.DAY_OF_MONTH, billDay);
-                    daysBetween = 0;
-                    today = Calendar.getInstance();
-                    while (billDate.compareTo(today) < 0) {
-                        billDate.add(Calendar.DAY_OF_MONTH, 1);
-                        daysBetween++;
-                    }
-                    if (daysBetween > diffDays) {
-                        diffDays = daysBetween;
-                        bestCardName = cardName.toString();
-                        bestCardNumber = cardNumber.toString();
-                        bestBillDate = billDay;
-                    }
                 } else if (curDay < billDay) {
                     billMonth = curMonth;
                     billYear = curYear;
-                    billDate = Calendar.getInstance();
+
                     billDate.set(Calendar.YEAR, billYear);
                     billDate.set(Calendar.MONTH, billMonth);
                     billDate.set(Calendar.DAY_OF_MONTH, billDay);
-                    daysBetween = 0;
-                    today = Calendar.getInstance();
-                    while (today.compareTo(billDate) < 0) {
-                        today.add(Calendar.DAY_OF_MONTH, 1);
-                        daysBetween++;
-                    }
-                    if (daysBetween > diffDays) {
-                        diffDays = daysBetween;
-                        bestCardName = new String(cardName);
-                        bestCardNumber = new String(cardNumber.toString());
-                        bestBillDate = billDay;
-                    }
+                }
+                daysBetween = 0;
+                today = Calendar.getInstance();
+                while (today.compareTo(billDate) < 0) {
+                    today.add(Calendar.DAY_OF_MONTH, 1);
+                    daysBetween++;
+                }
+                if (daysBetween > diffDays) {
+                    diffDays = daysBetween;
+                    bestCardName = cardName.toString();
+                    bestCardNumber = cardNumber.toString();
+                    bestBillDate = billDay;
                 }
                 cursor.moveToNext();
             }
@@ -155,24 +144,7 @@ public class ShowNotificationIntentService extends IntentService {
                     (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             // Builds the notification and issues it.
             mNotifyMgr.notify(mNotificationId, mBuilder.build());
+            cursor.close();
         }
-    }
-
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionFoo(String param1, String param2) {
-        // TODO: Handle action Foo
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionBaz(String param1, String param2) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
     }
 }

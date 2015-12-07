@@ -1,7 +1,9 @@
 package com.swarooprao.androidapps.swipewiz;
 
 import android.annotation.TargetApi;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,10 +26,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     CardDBHelper dbHelper;
     boolean reloadSavedCards = false;
+    private PendingIntent pendingIntent;
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
@@ -35,6 +39,19 @@ public class MainActivity extends AppCompatActivity {
         dbHelper = new CardDBHelper(getApplicationContext());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Calendar midnight = Calendar.getInstance();
+
+        midnight.set(Calendar.HOUR_OF_DAY, 0);
+        midnight.set(Calendar.MINUTE, 0);
+        midnight.set(Calendar.SECOND, 1);
+        midnight.set(Calendar.AM_PM,Calendar.AM);
+
+        Intent myIntent = new Intent(MainActivity.this, NotificationChangeReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, myIntent, 0);
+
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        alarmManager.setInexactRepeating(AlarmManager.RTC, midnight.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
         Button btnAddCard = (Button)findViewById(R.id.btnSaveCard);
         //final ListView lstSavedCardList = (ListView)findViewById(R.id.lstSavedCards);
@@ -109,6 +126,19 @@ public class MainActivity extends AppCompatActivity {
                 String cardName = txtCardName.getText().toString();
                 txtCardName.setText("");
 
+                if (cardNumber.isEmpty() || billDate.isEmpty() || cardName.isEmpty()) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                    alertDialog.setTitle("Alert");
+                    alertDialog.setMessage("Please provide details of card to be saved");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
+
                 getWindow().setSoftInputMode(
                         WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
                 );
@@ -133,32 +163,6 @@ public class MainActivity extends AppCompatActivity {
                 savedCardsAdapter.changeCursor(cursor);
 
                 updateNotification();
-                /*
-                TableRow row= new TableRow(getApplicationContext());
-                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f);
-
-                TextView col1 = new TextView(getApplicationContext());
-                col1.setBackground(cellShape);
-                col1.setTextColor(textColor);
-                col1.setText(listItem);
-                col1.setLayoutParams(lp);
-
-                TextView col2 = new TextView(getApplicationContext());
-                col2.setBackground(cellShape);
-                col2.setTextColor(textColor);
-                col2.setText(String.valueOf(billDate));
-                col2.setLayoutParams(lp);
-
-                row.addView(col1, 0);
-                row.addView(col2, 1);
-
-                tblSavedCards.addView(row);
-                */
-
-                //populateSavedCardsList();
-                //row.setLayoutParams(lp);
-                //savedCardList.add(listItem);
-                //savedCardListAdapter.notifyDataSetChanged();
             }
         });
     }
