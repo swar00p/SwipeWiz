@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.swarooprao.androidapps.swipewiz"
-    android:versionCode="2"
-    android:versionName="1.1">
+    package="com.swarooprao.androidapps.swipewiz" >
 
     <uses-sdk
-        android:maxSdkVersion="22"
-        android:targetSdkVersion="22" />
+        android:maxSdkVersion="24"
+    />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -18,8 +16,9 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
-        <activity android:name=".MainActivity" >
+        android:theme="@style/AppTheme"
+        android:fullBackupContent="true">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,18 +27,31 @@
         </activity>
 
         <receiver
-            android:name=".NotificationChangeReceiver"
+            android:name=".BootBroadcastReceiver"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true"
+            android:directBootAware="true">
             <intent-filter>
-                <action android:name="android.intent.action.NOTIFY" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.swarooprao.androidapps.swipewiz.CUSTOM_ACTION" />
             </intent-filter>
         </receiver>
 
         <service
-            android:name=".ShowNotificationIntentService"
-            android:exported="false" >
+            android:name=".AlarmCreationService"
+            android:enabled="true"
+            android:exported="true"
+            android:directBootAware="true">
         </service>
+
+        <receiver
+            android:name=".AlarmBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:directBootAware="true">
+        </receiver>
     </application>
 
 </manifest>

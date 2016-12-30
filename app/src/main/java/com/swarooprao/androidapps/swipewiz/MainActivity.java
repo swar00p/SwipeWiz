@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,16 +15,11 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,18 +34,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Calendar midnight = Calendar.getInstance();
-
-        midnight.set(Calendar.HOUR_OF_DAY, 0);
-        midnight.set(Calendar.MINUTE, 0);
-        midnight.set(Calendar.SECOND, 1);
-        midnight.set(Calendar.AM_PM,Calendar.AM);
-
-        Intent myIntent = new Intent(MainActivity.this, NotificationChangeReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, myIntent, 0);
-
-        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        alarmManager.setInexactRepeating(AlarmManager.RTC, midnight.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        Intent serviceIntent = new Intent(this, AlarmCreationService.class);
+        startService(serviceIntent);
 
         Button btnAddCard = (Button)findViewById(R.id.btnSaveCard);
         //final ListView lstSavedCardList = (ListView)findViewById(R.id.lstSavedCards);
@@ -145,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 InputMethodManager inputManager = (InputMethodManager)
                         getSystemService(Context.INPUT_METHOD_SERVICE);
 
-                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                inputManager.hideSoftInputFromWindow(v.getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
 
                 long cardId = dbHelper.addCard(cardName, cardNumber, Integer.parseInt(billDate));
@@ -169,8 +153,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateNotification() {
         Context context = MainActivity.this.getApplicationContext();
-        Intent service = new Intent(context, ShowNotificationIntentService.class);
-        context.startService(service);
+        //Intent service = new Intent(context, ShowNotificationIntentService.class);
+        //context.startService(service);
+
+        Intent updateNotificationIntent = new Intent(context, AlarmBroadcastReceiver.class);
+        context.sendBroadcast(updateNotificationIntent);
     }
 
     @Override
