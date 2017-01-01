@@ -4,7 +4,9 @@
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="#A4DDED"
+    tools:context=".MainActivity">
 
     <EditText
         android:layout_width="wrap_content"
@@ -14,7 +16,9 @@
         android:ems="12"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="20dp"
-        android:hint="@string/strCardName" />
+        android:hint="@string/strCardName"
+        android:background="@drawable/edittext_rounded_corners"
+        style="@android:style/Widget.Material.EditText" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -26,7 +30,9 @@
         android:hint="@string/strCardNum"
         android:layout_below="@+id/txtCardName"
         android:layout_marginBottom="20dp"
-        android:layout_alignLeft="@+id/txtCardName" />
+        android:layout_alignLeft="@+id/txtCardName"
+        android:background="@drawable/edittext_rounded_corners"
+        style="@android:style/Widget.Material.EditText" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -38,7 +44,9 @@
         android:hint="@string/strBillDate"
         android:layout_marginBottom="20dp"
         android:layout_below="@+id/txtCardNum"
-        android:layout_alignLeft="@+id/txtCardNum" />
+        android:layout_alignLeft="@+id/txtCardNum"
+        android:background="@drawable/edittext_rounded_corners"
+        style="@android:style/Widget.Material.EditText" />
 
     <Button
         android:layout_width="wrap_content"
@@ -47,7 +55,8 @@
         android:id="@+id/btnSaveCard"
         android:layout_marginBottom="20dp"
         android:layout_below="@+id/txtBillDate"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        style="@android:style/Widget.Material.Button.Inset" />
 <!--
     <ScrollView
         android:layout_width="fill_parent"
@@ -82,8 +91,11 @@
         android:layout_below="@+id/btnSaveCard"
         android:layout_centerHorizontal="true"
         android:choiceMode="singleChoice"
-        android:background="#929292"
-        android:focusableInTouchMode="true" />
+        android:background="@drawable/listview_border"
+        android:focusableInTouchMode="true"
+        android:divider="#efefef"
+        android:dividerHeight="1px"
+        style="@android:style/Widget.Material.ListView" />
 
 
 </RelativeLayout>

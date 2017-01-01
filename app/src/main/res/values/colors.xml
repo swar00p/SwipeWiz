@@ -7,4 +7,6 @@
     <color name="lightgray">#CCCCCC</color>
     <color name="black">#111111</color>
     <color name="white">#FFFFFF</color>
+    <color name="titlebackgroundcolor">#323232</color>
+    <color name="titletextcolor">#FFFF00</color>
 </resources>
